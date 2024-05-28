@@ -1,0 +1,275 @@
+@import url("https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap");
+@font-face {
+  font-family: "Days One";
+  src: url("../public/days-one/DaysOne-Regular.ttf") format("truetype");
+}
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Days One", sans-serif;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+body {
+  background: #252230;
+}
+
+.momentum_title {
+  font-size: 30px;
+  margin: 30px 0 0 20px;
+}
+
+hr {
+  color: #8F8F8F;
+}
+
+button {
+  /* Variables */
+  --button_radius: 0.75em;
+  --button_color: #7203FF;
+  --button_outline_color: #FFFFFF;
+  font-size: 11px;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--button_radius);
+  background: var(--button_outline_color);
+  width: 120px;
+}
+
+.button_top {
+  display: block;
+  box-sizing: border-box;
+  border: 2px solid var(--button_outline_color);
+  border-radius: var(--button_radius);
+  padding: 0.75em 1.5em;
+  background: var(--button_color);
+  color: var(--button_outline_color);
+  transform: translateY(-0.2em);
+  transition: transform 0.1s ease;
+}
+
+button:hover .button_top {
+  /* Pull the button upwards when hovered */
+  transform: translateY(-0.33em);
+}
+
+button:active .button_top {
+  /* Push the button downwards when pressed */
+  transform: translateY(0);
+}
+
+#data {
+  width: calc(100vw - 40px);
+  height: calc(85vh - 40px);
+  margin: 20px;
+  display: grid;
+  grid-template-columns: 0.7fr 0.5fr 1.5fr 0.8fr;
+  grid-template-rows: 1.4fr 1fr 0.5fr;
+  gap: 20px;
+}
+#data #admin-panel {
+  background: #1E1E1E;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+#data #admin-panel #pressure {
+  margin-left: auto;
+}
+#data #admin-panel #press-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+#data #admin-panel #ref-pressure {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  margin: 5px 0;
+}
+#data #admin-panel .red-error::after, #data #admin-panel .red-error::before {
+  color: red !important;
+  background: red !important;
+}
+#data #admin-panel .connected {
+  padding: 20px 0 15px 0;
+}
+#data #admin-panel .connected::after {
+  content: ".";
+  color: green;
+  width: 3px;
+  height: 100%;
+  background: green;
+  position: relative; /* Position the pseudo-element absolutely */
+  top: 0; /* Position it at the top */
+  right: -10px;
+}
+#data #admin-panel .connected::before {
+  content: ".";
+  color: green;
+  width: 3px;
+  height: 100%;
+  background: green;
+  position: relative; /* Position the pseudo-element absolutely */
+  top: 0; /* Position it at the top */
+  right: 10px;
+}
+#data #admin-panel .stav {
+  padding-bottom: 50px;
+}
+#data #admin-panel .stav::after {
+  content: ".";
+  color: green;
+  width: 3px;
+  height: 100%;
+  background: green;
+  position: relative; /* Position the pseudo-element absolutely */
+  top: 0; /* Position it at the top */
+  right: -10px;
+}
+#data #admin-panel .stav::before {
+  content: ".";
+  color: green;
+  width: 3px;
+  height: 100%;
+  background: green;
+  position: relative; /* Position the pseudo-element absolutely */
+  top: 0; /* Position it at the top */
+  right: 10px;
+}
+#data #admin-panel #time {
+  padding-bottom: 50px;
+  font-size: 25px;
+}
+#data #admin-panel #pressure-setting {
+  margin-bottom: 15px;
+}
+#data #press-chart {
+  background: #1E1E1E;
+  grid-column: 2/4;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#data #press-chart #press-title {
+  font-size: 20px;
+}
+#data #press-chart hr {
+  width: 50%;
+}
+#data #rocket-model {
+  background: #1E1E1E;
+  grid-row: 1/3;
+  grid-column: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+#data #rocket-model #name-model-rakety {
+  font-size: 20px;
+}
+#data #rocket-model hr {
+  width: 200px;
+}
+#data #rocket-model #rocket-model-close {
+  height: 90%;
+}
+#data #height-chart {
+  background: #1E1E1E;
+  grid-column: 1/3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#data #height-chart .indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  font-size: 2.2em;
+  font-weight: 100;
+  color: #555;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+#data #height-chart .ref-pressure {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+  margin-top: 10px;
+}
+#data #height-chart #height {
+  font-size: 25px;
+}
+#data #height-chart #odhad {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+#data #height-chart #proc-odh {
+  color: rgb(255, 255, 255);
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+#data #height-chart .progress-bar {
+  transform: scale(50%);
+  margin: -40px;
+}
+#data #main-data {
+  background: #1E1E1E;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  line-height: 40px;
+}
+#data #main-data #data-get {
+  margin: 20px;
+  padding: 0 25%;
+}
+#data #main-data #data-get tr, #data #main-data #data-get td {
+  border-bottom: 2px solid #8F8F8F;
+}
+#data #main-data #data-get .spec-data {
+  width: 120px;
+}
+#data #main-data #data-get .nums {
+  width: 200px;
+}
+#data #footer {
+  grid-column: 1/5;
+  grid-row: 3;
+  display: flex;
+  justify-content: space-between;
+}
+#data #footer #const {
+  margin-top: 30px;
+}
+#data #footer #const .construcked {
+  font-family: "GFS Didot", Courier, monospace;
+  font-size: 13px;
+}
+#data #footer #images {
+  padding-left: 90px;
+  height: 70px;
+  display: flex;
+  gap: 10px;
+  margin-right: -170px;
+}
+#data #footer #images img {
+  transform: scale(70%);
+}
+#data #footer #images #between-bar {
+  margin-top: 10px;
+  width: 3px;
+  height: 50px;
+  background: #8F8F8F;
+}/*# sourceMappingURL=App.css.map */
