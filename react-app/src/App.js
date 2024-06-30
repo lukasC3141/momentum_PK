@@ -254,9 +254,9 @@ function App() {
           <div className="construcked">Czech Rocket Chalenge 2024</div>
         </div>
         <div id="images">
-          <img id="school-logo1" src="./static/znak-removebg-preview.png" alt="school logo" />
+          <img id="momentum-logo" src=".\static\momentum_hezci.svg" alt="school logo" />
           <div id="between-bar"></div>
-          <img id="school-logo2" src="./static/znak-removebg-preview.png" alt="school logo" />
+          <img id="school-logo" src=".\static\logo gymple nádherné.png" alt="school logo" />
         </div>
       </div>
     </div>

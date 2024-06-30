@@ -274,30 +274,27 @@ button {
         
         #const {
             margin-top: 30px;
+
             .construcked {
                 font-family: 'GFS Didot', Courier, monospace;
                 font-size: 13px;
+            } 
+        }
+        #images {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px;
+            
+            #between-bar {
+                width: 3px;
+                height: 78px;
+                background: $hr_grey;
+            }
+            img {
+                width: 78px;
             }
         }
         
-        #images {
-            padding-left: 90px;
-            height: 70px;
-            display: flex;
-            gap: 10px;
-            margin-right: -170px;
-            
-            img {
-                transform: scale(70%);
-            }
-
-            #between-bar {
-                margin-top: 10px;
-                width: 3px;
-                height: 50px;
-                background: $hr_grey;
-            }
-        }
     }
 }
 
