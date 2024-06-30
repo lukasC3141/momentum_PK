@@ -260,6 +260,7 @@ def load_pressure():
 def data():
     if test_mode:
         new = process_data('-;27.76;1082.63;2.67;4.01;e')
+        #new = process_data('a;49.2391858;16.5546394;430;1;4.01;26.1;25;122;b;982.1;27.1;8;155;0.02;12;1;0.2;1;0;0.2;0.05;12;5;1;11;8;12.2;3.14;6.28;0;e')
         dat = calculate_and_refresh_data(new)
     else:
         new = receive_data()

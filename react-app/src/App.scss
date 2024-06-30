@@ -92,16 +92,29 @@ button {
         #pressure {
             margin-left: auto;
         }
-        #press-buttons {
+        #gps {
+            width: 10px;
+            height: 10px;
+            border-radius: 100%;
+            background-color: #d3ff00;
+            position: relative;
+            top: 105px;
+            right: 15px;
+        }
+        #mapa {
+            width: 287px;
+        }
+        #date {
             display: flex;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
+
+            #datum ,#čas {
+                margin: 10px 10px 0 10px;
+                font-size: 13px;
+                color: hsl(0, 0%, 70%);
+            }
         }
-        #ref-pressure {
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 12px;
-            margin: 5px 0;
-        }
+        
         .red-error::after, .red-error::before {
             color: red !important;
             background: red !important;
@@ -196,48 +209,69 @@ button {
         #rocket-model-close {
             height: 90%;
         }
+
+        #xx {
+            width: 78px;
+            height: 78px;
+            align-self: baseline;
+            background-color: #555;
+            border-top-right-radius: 50%;
+
+            #compas {
+                width: 78px;
+            }
+        }
     }
-    #height-chart {
+    #xyz {
         background: $window_grey;
         grid-column: 1/3;
         display: flex;
         flex-direction: column;
         align-items: center;
-        .indicator {
+        
+        .underline {
+            border-bottom: 2px solid $hr_grey;
+        }
+
+        #left_xyz {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            margin: 0 auto;
-            font-size: 2.2em;
-            font-weight: 100;
-            color: #555;
-            user-select: none;
+            margin: 30px;
+
+            #akcelerace {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-left: -40px;
+
+                #smol {
+                    font-size: 12px;
+                    color: $hr_grey;
+                }
+            }
+
+            #gyroskop {
+                margin-left: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
         }
-        .ref-pressure {
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 12px;
-            margin-top: 10px;
-        }
-        #height {
-            font-size: 25px;
-        }
-        #odhad {
-            font-size: 12px;
-            color:rgba(255, 255, 255, 0.7);
-        }
-        #proc-odh {
-            color: rgba(255, 255, 255);
-            font-size: 15px;
-            margin-bottom: 8px;
-        }
-        .progress-bar {
-            transform: scale(50%);
-            margin: -40px;
+        #right_xyz {
+            display: flex;
+            margin: 20px;
+
+            #lineární_akcelerace {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #magnetometr {
+                margin-left: 40px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
         }
 
         
@@ -248,20 +282,71 @@ button {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        font-size: 18px;
-        line-height: 40px;
+        font-size: 15px;
+        line-height: 25px;
         
         #data-get {
-            margin: 20px;
-            padding: 0 25%;
+            margin: 15px;
+
+            .heading {
+                display: flex;
+                justify-content: space-between;
+                font-size: 22px;
+                border-bottom: 2px solid $hr_grey;
+                margin-bottom: 15px;
+
+                .temp {
+                    margin-right: 90px;
+                }
+            }
+            .no_border {
+                border: none !important;
+            }
+
             tr, td {
                 border-bottom: 2px solid $hr_grey;
+                min-width: 150px
             }
-            .spec-data {
-                width: 120px;
-            }
+
             .nums {
-                width: 200px;
+                min-width: 150px;
+            }
+
+            #bottom_data {
+                display: flex;
+
+                #right_side_height_chart {
+                    margin-left: 30px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    #height2 {
+                        font-size: 15px;
+                    }
+                    #height_num {
+                        font-size: 25px;
+                    }
+                    #proc-odh2 {
+                        font-size: 12px;
+                        color: #555;
+                    }
+                    .indicator {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        text-align: center;
+                        position: absolute;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        margin: 0 auto;
+                        font-size: 17px;
+                        font-weight: 100;
+                        color: #555;
+                        user-select: none;
+                    }
+                }
             }
         }
     }

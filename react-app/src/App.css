@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap");
 @font-face {
   font-family: "Days One";
@@ -78,15 +79,26 @@ button:active .button_top {
 #data #admin-panel #pressure {
   margin-left: auto;
 }
-#data #admin-panel #press-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+#data #admin-panel #gps {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #d3ff00;
+  position: relative;
+  top: 105px;
+  right: 15px;
 }
-#data #admin-panel #ref-pressure {
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 12px;
-  margin: 5px 0;
+#data #admin-panel #mapa {
+  width: 287px;
+}
+#data #admin-panel #date {
+  display: flex;
+  justify-content: space-between;
+}
+#data #admin-panel #date #datum, #data #admin-panel #date #čas {
+  margin: 10px 10px 0 10px;
+  font-size: 13px;
+  color: hsl(0, 0%, 70%);
 }
 #data #admin-panel .red-error::after, #data #admin-panel .red-error::before {
   color: red !important;
@@ -177,14 +189,113 @@ button:active .button_top {
 #data #rocket-model #rocket-model-close {
   height: 90%;
 }
-#data #height-chart {
+#data #rocket-model #xx {
+  width: 78px;
+  height: 78px;
+  align-self: baseline;
+  background-color: #555;
+  border-top-right-radius: 50%;
+}
+#data #rocket-model #xx #compas {
+  width: 78px;
+}
+#data #xyz {
   background: #1E1E1E;
   grid-column: 1/3;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-#data #height-chart .indicator {
+#data #xyz .underline {
+  border-bottom: 2px solid #8F8F8F;
+}
+#data #xyz #left_xyz {
+  display: flex;
+  margin: 30px;
+}
+#data #xyz #left_xyz #akcelerace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: -40px;
+}
+#data #xyz #left_xyz #akcelerace #smol {
+  font-size: 12px;
+  color: #8F8F8F;
+}
+#data #xyz #left_xyz #gyroskop {
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#data #xyz #right_xyz {
+  display: flex;
+  margin: 20px;
+}
+#data #xyz #right_xyz #lineární_akcelerace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#data #xyz #right_xyz #magnetometr {
+  margin-left: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#data #main-data {
+  background: #1E1E1E;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  line-height: 25px;
+}
+#data #main-data #data-get {
+  margin: 15px;
+}
+#data #main-data #data-get .heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 22px;
+  border-bottom: 2px solid #8F8F8F;
+  margin-bottom: 15px;
+}
+#data #main-data #data-get .heading .temp {
+  margin-right: 90px;
+}
+#data #main-data #data-get .no_border {
+  border: none !important;
+}
+#data #main-data #data-get tr, #data #main-data #data-get td {
+  border-bottom: 2px solid #8F8F8F;
+  min-width: 150px;
+}
+#data #main-data #data-get .nums {
+  min-width: 150px;
+}
+#data #main-data #data-get #bottom_data {
+  display: flex;
+}
+#data #main-data #data-get #bottom_data #right_side_height_chart {
+  margin-left: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#data #main-data #data-get #bottom_data #right_side_height_chart #height2 {
+  font-size: 15px;
+}
+#data #main-data #data-get #bottom_data #right_side_height_chart #height_num {
+  font-size: 25px;
+}
+#data #main-data #data-get #bottom_data #right_side_height_chart #proc-odh2 {
+  font-size: 12px;
+  color: #555;
+}
+#data #main-data #data-get #bottom_data #right_side_height_chart .indicator {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -194,55 +305,12 @@ button:active .button_top {
   width: 100%;
   height: 100%;
   margin: 0 auto;
-  font-size: 2.2em;
+  font-size: 17px;
   font-weight: 100;
   color: #555;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
-}
-#data #height-chart .ref-pressure {
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 12px;
-  margin-top: 10px;
-}
-#data #height-chart #height {
-  font-size: 25px;
-}
-#data #height-chart #odhad {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-}
-#data #height-chart #proc-odh {
-  color: rgb(255, 255, 255);
-  font-size: 15px;
-  margin-bottom: 8px;
-}
-#data #height-chart .progress-bar {
-  transform: scale(50%);
-  margin: -40px;
-}
-#data #main-data {
-  background: #1E1E1E;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  line-height: 40px;
-}
-#data #main-data #data-get {
-  margin: 20px;
-  padding: 0 25%;
-}
-#data #main-data #data-get tr, #data #main-data #data-get td {
-  border-bottom: 2px solid #8F8F8F;
-}
-#data #main-data #data-get .spec-data {
-  width: 120px;
-}
-#data #main-data #data-get .nums {
-  width: 200px;
 }
 #data #footer {
   grid-column: 1/5;

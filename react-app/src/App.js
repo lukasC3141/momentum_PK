@@ -157,29 +157,18 @@ function App() {
     <hr></hr>
     <div id="data">
       <div id="admin-panel">
+        <div id="date">
+          <div id="datum">datum: 12.6.2024</div>
+          <div id="čas">čas: 17:22:21</div>
+        </div>
         <div className={flaskError || rocketDisconected ? "red-error connected" : "connected"} >
           připojeno: {flaskError || rocketDisconected ? "NE" : "ANO"}
         </div>
         <div className={ flaskError || rocketError || rocketDisconected ? "red-error stav" : "stav"}>
           stav: {flaskError ? "flask Error" : ( rocketError ? "rocket Error" : ( rocketDisconected ? "rocket disconected" : "OK"))}
         </div>
-        <div id="time">
-          čas: {time}s
-        </div>
-        <div id="pressure-setting">
-          nastavení tlaku:
-        </div>
-        <div id="press-buttons">
-          <button ref={rucneButton} onClick={() => handleButtonClick('/load_pressure')}>
-            <span className="button_top">RUČNÍ</span>
-          </button>
-          <button ref={senzorButton} onClick={() => handleButtonClick('/set_pressure')}>
-          <span className="button_top">ZE SENZORU</span>
-          </button>
-        </div>
-        <div id="ref-pressure">
-          referenční tlak: {pressure_reference} hPa
-        </div>
+        <div id="gps"></div>
+        <img id="mapa" src=".\static\mapa.png" alt="mapa" />
       </div>
       <div id="press-chart">
         <div id="press-title">graf tlaku v závislosti na čase</div>
@@ -198,54 +187,100 @@ function App() {
             </Suspense>
           </Canvas>
         </div>
+        <div id="xx">
+          <img id="compas" src=".\static\compass-512.webp" alt="compas"/>
+        </div>
         {/* <img id="rocket-model-close" src="./static/rocket-model.png" alt="rocket"></img>*/}
       </div>
-      <div id="height-chart">
-        <div className="ref-pressure">*vypočítaná z tlaku</div>
-        <div id="height">*výška: {reference_height} m</div>
-        <div id="odhad">odhad dosažené výšky: {odhad} m</div>
-        
-        <ProgressBar
-            progress={progress}
-            radius={100}
-            initialAnimation={true}
-            strokeColor="#7203FF"
-            strokeLinecap="square"
-            trackStrokeWidth={18}
-            className="progress-bar"
-            >
-              <div className="indicator">
-                <div>{progress}%</div>
-            </div>
-            </ProgressBar>
-        <div id="proc-odh">procentuální dosažení odhadu</div>
+      <div id="xyz">
+        <div id="left_xyz">
+          <div id="akcelerace">
+            <div className="underline">akcelerace</div>
+            <div>x: 1 G</div>
+            <div>y: 0.2 G</div>
+            <div>z: 0 G</div>
+            <div id="smol">(síla působící na raketu 1.2 N)</div>
+          </div>
+          <div id="gyroskop">
+            <div className="underline">gyroskop</div>
+            <div>x: 1 °/s</div>
+            <div>y: 15 °/s</div>
+            <div>z: 0 °/s</div>
+          </div>
+        </div>
+        <div id="right_xyz">
+          <div id="lineární_akcelerace">
+            <div className="underline">lineární akcelerace</div>
+            <div>x: 1 m*s^2</div>
+            <div>y: 0 m*s^2</div>
+            <div>z: 0 m*s^2</div>
+          </div>
+          <div id="magnetometr">
+            <div className="underline">magnetometr</div>
+            <div>x: 12 µT</div>
+            <div>y: 8 µT</div>
+            <div>z: 22 µT</div>
+          </div>
+        </div>
       </div>
       <div id="main-data">
         <div id="data-get">
-        <table>
-          <tr>
-            <td className="spec-data">teplota: </td>
-            <td className="nums">{temperature} °C</td>
-          </tr>
-          <tr>
-            <td className="spec-data">napětí: </td>
-            <td className="nums">{voltage} V</td>
-          </tr>
-          <tr>
-            <td className="spec-data">tlak: </td>
-            <td className="nums">{pressure} hPa</td>
-          </tr>
-          <tr>
-            <td className="spec-data">rychlost: </td>
-            <td className="nums">{speed_of_falls} m/s</td>
-          </tr>
-          <tr>
-            <td className="spec-data">hybnost: </td>
-            <td className="nums">{momentums} kg*m/s</td>
-            
-          </tr>
-        </table>
-        </div>   
+          <div className="heading">
+            <div className="temp">teplota: {temperature}°C</div>
+            <div>tlak: {pressure} hPa</div>
+          </div>
+          <div id="bottom_data">
+            <table>
+              <tr>
+                <td className="spec-data no_border">teplota hl. desky: </td>
+                <td className="nums no_border">27 °C</td>
+              </tr>
+              <tr>
+                <td className="spec-data">teplota baterie: </td>
+                <td className="nums">27 °C</td>
+              </tr>    
+              <tr>
+                <td className="spec-data">napětí baterie: </td>
+                <td className="nums">{voltage} V</td>
+              </tr>
+              <tr>
+                <td className="spec-data">vlhkost: </td>
+                <td className="nums">2 %</td>
+              </tr>
+              <tr>
+                <td className="spec-data no_border">C02 ekv. </td>
+                <td className="nums no_border">20000 ppm</td>
+              </tr>
+              <tr>
+                <td className="spec-data">C02 VOC </td>
+                <td className="nums">3 ppm</td>
+              </tr>
+              <tr>
+                <td className="spec-data">IAQ </td>
+                <td className="nums">12</td>
+              </tr>
+            </table>
+            <div id="right_side_height_chart">
+              <div id="height2">výška nad zemí: </div>
+              <div id="height_num">{reference_height} m</div>              
+              <ProgressBar
+                  progress={progress + time}
+                  radius={40}
+                  initialAnimation={true}
+                  strokeColor="#7203FF"
+                  strokeLinecap="square"
+                  trackStrokeWidth={8}
+                  strokeWidth={8}
+                  className="progress-bar"
+                  >
+                    <div className="indicator">
+                      <div>{progress + time}%</div>
+                    </div>
+                  </ProgressBar>
+              <div id="proc-odh2">dosažení odhadu {odhad} m</div>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="footer">
         <div id="const">
