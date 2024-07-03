@@ -175,13 +175,44 @@ def calculate_and_refresh_data(new: dict) -> dict:
 
     return new
 
+# archives data to workplace and main arch
 
 def archive_data(new: dict):
-    new: str = f'{get_time()};{atmospheric_pressure_reference};{new}\n'
-    with open(path + '\\raw.txt', 'a') as outfile:
-        outfile.write(new)
-    with open(path + '\\backup_raw.txt', 'a') as outfile:
-        outfile.write(new)
+    lis: list
+    try:
+        with open(path + "/workplace/main_arch.json", "r") as outfile:
+            lis = load(outfile)
+    except Exception as err:
+        print(err)
+        try:
+            with open(path + "/workplace/backup_arch.json", "r") as \
+                    outfile:
+                lis = load(outfile)
+        except Exception as err:
+            print(err)
+            lis = []
+    lis.append(new)
+
+    # archive of small parts or get lis in json main_arch
+
+    if len(lis) >= size_of_arch_files:
+        global n_file
+        with open(path + "/workplace/main_arch.json", "w") as outfile:
+            dump([], outfile)
+        with open(path + "/workplace/backup_arch.json", "w") as outfile:
+            dump([], outfile)
+
+        with open(path + f"/archives/{n_file}.json", "w") as outfile:
+            dump(lis, outfile)
+        with open(path + f"/archives_backup/{n_file}.json", "w") as outfile:
+            dump(lis, outfile)
+
+        n_file += 1
+    else:
+        with open(path + "/workplace/main_arch.json", "w") as outfile:
+            dump(lis, outfile)
+        with open(path + "/workplace/backup_arch.json", "w") as outfile:
+            dump(lis, outfile)
 
 
 server = Flask(__name__,
