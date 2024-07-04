@@ -9,8 +9,10 @@ from time import sleep
 
 
 # this is not used, left it here just in case
-TEST_MODE: bool = False
+TEST_MODE: bool = True
 REPLAY: bool = False
+MAP_LIMITS: bool = False
+
 REPLAY_TIME = 0
 REPLAY_CONNECTION = None
 REPLAY_SRC = './rep.txt'
@@ -52,7 +54,11 @@ rad_times: List[int] = []
 def load_pressure() -> None:
     try:
         with open(f"reference.json", "r") as file:
-            pressure = float(load(file))
+            try:
+                pressure = float(load(file))
+            except TypeError as err:
+                print(err)
+                pressure = float(load(file)[0])
 
             global atmospheric_pressure_reference, last_pressure
             atmospheric_pressure_reference = pressure
@@ -84,12 +90,12 @@ def process_data(data_str: str, errors: List[str]) -> dict:
         return processed
 
     try:
-        if GPS_LIMITS[0][0] < float(latitude) < GPS_LIMITS[0][1]:
+        if GPS_LIMITS[0][0] < float(latitude) < GPS_LIMITS[0][1] or not MAP_LIMITS:
             processed['latitude'] = round(float(latitude), 6)
-        if GPS_LIMITS[1][0] < float(longitude) < GPS_LIMITS[1][1]:
+        if GPS_LIMITS[1][0] < float(longitude) < GPS_LIMITS[1][1] or not MAP_LIMITS:
             processed['longitude'] = round(float(longitude), 6)
 
-        if altitude != 0:
+        if altitude != 0 or True:
             processed['altitude'] = int(altitude)
         processed['sat_count'] = int(sat_count)
         processed['battery_voltage'] = round(float(battery_voltage), 2)
@@ -167,7 +173,6 @@ def process_data(data_str: str, errors: List[str]) -> dict:
         archive_error(repr(err), path)
         processed['errors'].insert(0, 'Secondary Arduino not responding')
 
-    
 
     return processed
 
@@ -277,7 +282,7 @@ def calculate_from_data(new: dict, last_data_: dict, init_time_: int,
         except Exception:
             pass
 
-        
+
         if 'time' not in last_data_.keys():
             last_data_ = new.copy()
 
