@@ -277,23 +277,7 @@ def calculate_from_data(new: dict, last_data_: dict, init_time_: int,
         except Exception:
             pass
 
-        to_pop = 0
-        for item in rad_times:
-            if item + 60 < new['time']:
-                to_pop += 1
-        for i in range(to_pop):
-            rad_clicks.pop(0)
-            rad_times.pop(0)
-        try:
-            rad_clicks.append(new['rad_click'])
-            rad_times.append(new['time'])
-        except Exception:
-            pass
-        if len(rad_clicks) == 0: 
-            new["rad_cmp"] = 0
-        else:
-            new['rad_cmp'] = sum(rad_clicks)
-
+        
         if 'time' not in last_data_.keys():
             last_data_ = new.copy()
 
