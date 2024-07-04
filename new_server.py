@@ -8,8 +8,9 @@ from math import log, atan2, pi
 from time import sleep
 
 
+# this is not used, left it here just in case
 TEST_MODE: bool = False
-REPLAY: bool = True
+REPLAY: bool = False
 REPLAY_TIME = 0
 REPLAY_CONNECTION = None
 REPLAY_SRC = './rep.txt'
@@ -39,8 +40,8 @@ GPS_LIMITS = ((48.5519972, 51.0556997), (12.0906633, 18.8591456))
 atmospheric_pressure_reference: float = 1000
 last_pressure: float = -1
 last_data: dict = {}
-distributed_data: dict = {"latitude": 0, "longitude": 0, "altitude": 0, "sat_count": 0, "rad_cmp": 0, "battery_charge": 1,
-                          "battery_voltage": 3.81, "uv": 1.61, "light":2200, "battery_temperature": 24.33, "board_temperature": 37.07,
+distributed_data: dict = {"latitude": 0, "longitude": 0, "altitude": 0, "sat_count": 0, "battery_charge": 1,
+                          "battery_voltage": 3.81, "battery_temperature": 24.33, "board_temperature": 37.07,
                           "atm_pressure": 1021.82, "atm_temperature": 22.77, "atm_humidity": 29, "atm_co2_eq": 500, "atm_co2_voc": 0.49, "atm_iaq": 25, 
                           "g_force": (0.07, 0.52, 0.86), "gyroscope": (0.00, 0.00, 0.00), "acceleration": (0.03,0.04,0.01), "magnetometer": (-321.00, -497.00, -557.00), "orientation": (-0.55, 0.07, 3.65), "force":(0.00, 0.00, 0.00)}
 
@@ -75,11 +76,8 @@ def process_data(data_str: str, errors: List[str]) -> dict:
         altitude: str = sliced[a_index + 3]
         sat_count: str = sliced[a_index + 4]
         battery_voltage: str = sliced[a_index + 5]
-        uv: str = sliced[a_index + 6]
-        light: str = sliced[a_index + 7]
-        battery_temperature: str = sliced[a_index + 8]
-        board_temperature: str = sliced[a_index + 9]
-        rad_click: str = sliced[a_index + 10]
+        battery_temperature: str = sliced[a_index + 6]
+        board_temperature: str = sliced[a_index + 7]
     except (ValueError, IndexError) as err:
         archive_error(repr(err), path)
         processed['errors'].append(repr(err))
@@ -95,13 +93,10 @@ def process_data(data_str: str, errors: List[str]) -> dict:
             processed['altitude'] = int(altitude)
         processed['sat_count'] = int(sat_count)
         processed['battery_voltage'] = round(float(battery_voltage), 2)
-        processed['uv'] = round(float(uv), 2)
-        processed['light'] = int(light)
         processed['battery_temperature'] = \
             round(float(battery_temperature), 2)
         processed['board_temperature'] = \
             round(float(board_temperature), 2)
-        processed['rad_click'] = int(rad_click)
     except ValueError as err:
         archive_error(repr(err), path)
         processed['errors'].append(repr(err))
