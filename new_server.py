@@ -438,13 +438,13 @@ def refresh():
     if REPLAY:
         org = REPLAY_CONNECTION.readline()
         if not org:
-            sleep(1)
+            sleep(60)
 
         col_i = org.index(';')
         org = org[col_i+1:]
         print(org)
     elif TEST_MODE:
-        org = 'a;50.358021;16.240370;600;8;3.85;3.13;2199;16.51;24.73;0;b;975.29;16.01;50;2098;8.17;407;0.18;0.17;0.97;-0.02;-0.05;0.02;0.01;-0.00;0.01;-561.00;-169.00;193.00;-0.17;0.18;0.33;e'
+        org = 'a;49.239185;16.554634;430;1;4.01;26.11;25.05;122;b;982.1;27.1;8;155;0.02;12;1.2;0.2;1.2;0;0.2;0.05;12;5;1;11;8;12.2;3.14;6.28;0;e'
     else:
         org = receive_data()
         org = org[2:-1]
@@ -458,8 +458,8 @@ def refresh():
 
     global distributed_data
     keys_to_copy = [
-        'latitude', 'longitude', 'altitude', 'sat_count', 'battery_voltage', 'uv',
-        'light', 'battery_temperature', 'board_temperature', 'rad_cmp', 'rad_ion',
+        'latitude', 'longitude', 'altitude', 'sat_count', 'battery_voltage', 
+        'battery_temperature', 'board_temperature',
         'atm_pressure', 'atm_temperature', 'atm_humidity', 'atm_co2_eq',
         'atm_co2_voc', 'atm_iaq', 'g_force', 'gyroscope', 'acceleration',
         'magnetometer', 'orientation', 'force', 'time', 'real_time',
@@ -497,8 +497,6 @@ def index():
 
 if __name__ == '__main__':
     path, init_time = init()
-    #scheduler.add_job(id='Refresh', func=refresh, trigger='interval', seconds=1/FREQUENCY)
-    #scheduler.start()
 
     if TEST_MODE:
         server.run(debug=True, use_reloader=False)
