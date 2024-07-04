@@ -1,1 +1,5 @@
 storage
+data_processing/data
+data_processing/fragments
+data_processing/outdated
+data_processing/useable

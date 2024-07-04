@@ -100,14 +100,12 @@ def process_data(dat: str) -> dict:
         processed[0]['error']: bool = True
         return processed
 
-    # processing data from rocket
-
     try:
-        p_index: int = sliced.index('-')
-        temperature: str = sliced[p_index + 1]
-        pressure: str = sliced[p_index + 2]
-        reference_height: str = sliced[p_index + 3]
-        voltage: str = sliced[p_index + 4]
+        a_index: int = sliced.index('a')
+        temperature: str = sliced[a_index + 1]
+        pressure: str = sliced[a_index + 2]
+        reference_height: str = sliced[a_index + 3]
+        voltage: str = sliced[a_index + 4]
 
         processed[0]['temperature']: float = float(temperature)
         processed[0]['pressure']: float = float(pressure)
@@ -228,8 +226,8 @@ def load_pressure():
 @server.route('/data')
 def data():
     if test_mode:
-        new = process_data('-;27.76;1082.63;2.67;4.01;e')
-        #new = process_data('a;49.2391858;16.5546394;430;1;4.01;26.1;25;122;b;982.1;27.1;8;155;0.02;12;1;0.2;1;0;0.2;0.05;12;5;1;11;8;12.2;3.14;6.28;0;e')
+        #new = process_data('-;27.76;1082.63;2.67;4.01;e')
+        new = process_data('a;49.239185;16.554634;430;1;4.01;26.11;25.05;122;b;982.1;27.1;8;155;0.02;12;1.2;0.2;1.2;0;0.2;0.05;12;5;1;11;8;12.2;3.14;6.28;0;e')
         dat = calculate_and_refresh_data(new)
     else:
         new = receive_data()

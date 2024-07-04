@@ -1,0 +1,34 @@
+latitude: float6, °;
+longitude: float6, °;
+altitude: int, m;
+sat_count: int, ;
+battery_voltage: float2, V;
+battery_temperature: float2, C;
+board_temperature: float2, C;
+
+atm_pressure: float2, hPa;
+atm_temperature: float2, C;
+atm_humidity: int, %;
+atm_co2_eq: int, ppm;
+atm_co2_voc: float2, ppm;
+atm_iaq: int, ;
+
+g_force: Tuple[float2, float2, float2], G;
+gyroscope: Tuple[float2, float2, float2], °/s;
+acceleration: Tuple[float2, float2, float2], m*s^2;
+magnetometer: Tuple[float2, float2, float2], µT;
+orientation: Tuple[float2, float2, float2], rad;
+
+force: Tuple[float4, float4, float4], N;
+time: int, s from startup;
+real_time: str;
+reference_pressure: float2, hPa;
+compass: float6;
+relative_altitude: float2, m;
+map: Tuple[float2, float2];
+
+fall_speed: float2, m/s;
+time_to_land: float2, s;
+momentum: float2, ;
+
+errors: List[str];
