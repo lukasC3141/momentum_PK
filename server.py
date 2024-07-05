@@ -2,11 +2,14 @@ from typing import Tuple, Union, List, Dict
 from flask import Flask, render_template
 from serial import Serial
 from datetime import datetime
-from os import getcwd, mkdir
+from os import getcwd, mkdir, path
 from json import dump, dumps, load
 from math import log, atan2, pi
 from time import sleep
 
+#setting path to folders with frontend
+templates_directory = path.abspath('./react-app/build') 
+static_directory = path.abspath('./react-app/build/static')
 
 # this is not used, left it here just in case
 TEST_MODE: bool = True
@@ -419,7 +422,8 @@ def archive_data(new: str, path_: str) -> None:
         outfile.write(new)
 
 
-server = Flask(__name__)
+server = Flask(__name__, template_folder=templates_directory,
+    static_folder=static_directory)
 #scheduler = APScheduler()
 
 
