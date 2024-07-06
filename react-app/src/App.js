@@ -100,7 +100,7 @@ function App() {
   const [Time, setTime] = useState(-1)
   const [RealTime, setRealTime] = useState("-1.-1.-2024")
   const [ReferencePressure, setReferencePressure] = useState(-1)
-  const [Compas, setCompas] = useState(-1)
+  const [Compass, setCompass] = useState(-3*Math.PI/4)
   const [RelativeAltitude, setRelativeAltitude] = useState(-1)
   const [Map, setMap] = useState([-1, -1])
   const [FallSpeed, setFallSpeed] = useState(-1)
@@ -110,6 +110,28 @@ function App() {
   const odhad = 725       //kolik odhadujeme dostup rakety v metrech
   const progress = Math.floor(RelativeAltitude / odhad * 100) 
 
+  //make the gps red after getting of the map
+  const [makeRed1, setMakeRed1] = useState(false)
+  const [makeRed2, setMakeRed2] = useState(false)
+
+  const funcLatitude = (lat) => {
+    if (Math.abs(49.239890-lat) < 0.00427) {
+      setMakeRed1(false)
+      return Math.floor((49.239890-lat)/0.000048)
+    }else {
+      setMakeRed1(true)
+      return (lat > 49.24416 ? -89 : 89)
+    }
+  }
+  const funcLongitude = (lon) => {
+    if (Math.abs(16.554873-lon) < 0.0103) {
+      setMakeRed2(false)
+      return Math.floor((16.554873-lon)/0.000072)
+    }else {
+      setMakeRed2(true)
+      return (lon > 16.565173 ? -143 : 143)
+    }
+  }
 
   let previousData = null;
   let consecutiveSameDataCount = 0;
@@ -120,7 +142,7 @@ function App() {
     .then(res => res.json())
     .then(data => {
 
-      //console.log(data);
+      console.log(data);
 
       const {latitude, longitude, altitude, sat_count, battery_voltage, battery_temperature, board_temperature, atm_pressure, atm_temperature, atm_humidity, atm_co2_eq, atm_co2_voc, atm_iaq, g_force, gyroscope, acceleration, magnetometer, orientation, force, time, real_time, reference_pressure, compass, relative_altitude, map, fall_speed, time_to_land, momentum, errors} = data
       
@@ -142,9 +164,16 @@ function App() {
         setFlaskError(false);
         setRocketDisconected(false)
         setRocketError(errors.length > 0 ? true : false)
-
-        setLatitude(latitude)
-        setLongitude(longitude)
+        if (errors.length > 0) {
+          console.log("problem with rocket you dumbass... ",errors)
+        }
+        let lat = 49.2406750
+        let lon = 16.5567658
+        
+        //Math.abs(49.239890-lat) < 0.00427 ? Math.floor((49.239890-lat)/0.000048) : ( lat > 49.24416 ? -89 : 89 )
+        //Math.abs(16.554873-lon) < 0.0103 ? Math.floor((16.554873-lon)/0.000072) : ( lon > 16.565173 ? -143 : 143)
+        setLatitude( funcLatitude(latitude) ) //y
+        setLongitude( funcLongitude(longitude) ) //x
         setAltitude(altitude)
         setSatCount(sat_count)
         setBatteryVoltage(battery_voltage)
@@ -165,12 +194,13 @@ function App() {
         setTime(time)
         setRealTime(real_time)
         setReferencePressure(reference_pressure)
-        setCompas(compass)
+        setCompass(-3*Math.PI/4 + compass) //-3*Math.PI/4 for arrow to point to north
         setRelativeAltitude(relative_altitude)
         setMap(map)
         setFallSpeed(fall_speed)
         setTimeToLand(time_to_land)
         setMomentum(momentum)
+        
         
       }
 
@@ -182,6 +212,8 @@ function App() {
 
   //reload page when orientation is new
   useEffect(() => {console.log("changed orientation")}, [Orientation]);
+
+  
 
   //const rucneButton = useRef(null)
   //const senzorButton = useRef(null)
@@ -205,6 +237,7 @@ function App() {
     }
   };*/
 
+
   return (
     <>
     <h5 className="momentum_title">MOMENTUM</h5>
@@ -221,8 +254,8 @@ function App() {
         <div className={ flaskError || rocketError || rocketDisconected ? "red-error stav" : "stav"}>
           stav: {flaskError ? "flask Error" : ( rocketError ? "rocket Error" : ( rocketDisconected ? "rocket disconected" : "OK"))}
         </div>
-        <div id="gps"></div>
-        <img id="mapa" src=".\static\mapa.png" alt="mapa" />
+        <div id="gps" style={{ top: `${105 + Latitude}px`,right: `${Longitude}px`, backgroundColor: `${makeRed1 || makeRed2 ? "red" : "#d3ff00"}` }}></div>
+        <img id="mapa" src=".\static\map_gps.png" alt="map" />
       </div>
       <div id="press-chart">
         <div id="press-title">graf tlaku v závislosti na čase</div>
@@ -241,8 +274,9 @@ function App() {
             </Suspense>
           </Canvas>
         </div>
-        <div id="xx">
-          <img id="compas" src=".\static\compass-512.webp" alt="compas"/>
+        <div id="main_compass">
+          <img id="compass" src=".\static\compass_empty_fr.png" alt="compass"/>
+          <img id="arrow" src=".\static\střelka_good.png" style={{ transform: `rotate(${Time}rad)` }} alt="compass_arrow"/>
         </div>
       </div>
       <div id="xyz">

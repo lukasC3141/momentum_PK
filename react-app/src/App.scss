@@ -98,11 +98,11 @@ button {
             border-radius: 100%;
             background-color: #d3ff00;
             position: relative;
-            top: 105px;
-            right: 15px;
+            transition: transform 0.5s ease;
         }
         #mapa {
             width: 287px;
+            
         }
         #date {
             display: flex;
@@ -210,15 +210,21 @@ button {
             height: 90%;
         }
 
-        #xx {
+        #main_compass {
             width: 78px;
             height: 78px;
             align-self: baseline;
             background-color: #555;
             border-top-right-radius: 50%;
 
-            #compas {
+            #compass {
                 width: 78px;
+            }
+            #arrow {
+                width: 78px;
+                position: relative;
+                bottom: 82px;
+                transition: transform 0.5s ease;
             }
         }
     }
