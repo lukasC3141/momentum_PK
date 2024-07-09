@@ -1,16 +1,14 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import "./App.css"
 import LineChart from "./components/Chart";
 import ProgressBar from 'react-customizable-progressbar'
 
-import { useGLTF } from '@react-three/drei'
 import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Environment, OrbitControls } from '@react-three/drei'
 
 import { useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { AmbientLight } from "three";
 
 let currentDate = new Date();
 let year = currentDate.getFullYear();
@@ -18,63 +16,20 @@ let month = currentDate.getMonth() + 1; // Months are zero-indexed
 let day = currentDate.getDate();
 
 function Scene({ orientation }) {
-  const gltf = useLoader(GLTFLoader, './static/rocket2.gltf')
-  //[0, 0, - Math.PI / 2]
-  //[orientation[0] ? orientation[0] : 0, orientation[1]  ? orientation[1] : 0, orientation[2]  ? orientation[2] - Math.PI / 2 : 0]
+  const gltf = useLoader(GLTFLoader, './static/rocket.gltf')
   return <primitive object={gltf.scene}
    scale={6}
-   rotation={[orientation[0] ? orientation[0] : 0, orientation[1]  ? orientation[1] : 0, orientation[2]  ? orientation[2] - Math.PI / 2 : 0]}
+   rotation={[orientation[0] ? orientation[0] : 0, orientation[1]  ? orientation[1] : 0, orientation[2]  ? orientation[2] : 0]}
    position={[0, 0, 0]}/>   
 }
 
-
-/*export function Model(props) {
-  const { nodes, materials } = useGLTF('./static/rocket.gltf')
-  return (
-    <group {...props} dispose={null}>
-      {/* Render the trup }
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.trup.geometry}
-        material={nodes.trup.material}
-        rotation={[0, 0, Math.PI / 2]}
-      />
-      
-      {/* Render the Cylinder }
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.Cylinder.geometry}
-        material={nodes.Cylinder.material}
-        position={[0, -0.4, 0]}
-        rotation={[3.1, -0.6, 0]}
-        scale={[1, 1, 1]} // Set appropriate scale
-      />
-      
-      {/* Render the finy }
-      <mesh
-        castShadow
-        receiveShadow
-        geometry={nodes.finy.geometry}
-        material={nodes.finy.material}
-        position={[0, -0.3, -0.1]}
-        rotation={[-Math.PI / 2, Math.PI / 2, 0]}
-        scale={[1, 1, 1]} // Set appropriate scale
-      />
-
-    </group>
-  )
-}
-
-useGLTF.preload('./static/rocket.gltf')*/
 
 function App() {
 
   //error useStates
   const [flaskError, setFlaskError] = useState(false) //pokud je false, jde flask v pořádku
   const [rocketError, setRocketError] = useState([]) //pokud přijde error z flasku dojde do tohoto listu
-  const [rocketDisconected, setRocketDisconected] = useState(false)
+  const [rocketDisconnected, setRocketDisconnected] = useState(false);
 
   //data useStates
   const [Latitude, setLatitude] = useState(-1)
@@ -107,8 +62,11 @@ function App() {
   const [TimeToLand, setTimeToLand] = useState(-1)
   const [Momentum, setMomentum] = useState(-1)
 
+  const [GPSX, setGPSX] = useState(72)
+  const [GPSY, setGPSY] = useState(44)
+
   const odhad = 725       //kolik odhadujeme dostup rakety v metrech
-  const progress = Math.floor(RelativeAltitude / odhad * 100) 
+  const [maxProgress, setMaxProgress] = useState(-1) //var for progress wheel
 
   //make the gps red after getting of the map
   const [makeRed1, setMakeRed1] = useState(false)
@@ -133,114 +91,125 @@ function App() {
     }
   }
 
-  let previousData = null;
-  let consecutiveSameDataCount = 0;
-  
+  //vars for setRocketDisconnected useState
+  const [previousData, setPreviousData] = useState(null);
+  const [consecutiveSameDataCount, setConsecutiveSameDataCount] = useState(0);
 
-  async function get_data() {
-    fetch("/data")
-    .then(res => res.json())
-    .then(data => {
 
-      console.log(data);
+const fetchData = useCallback(async () => {
+  try {
+    const res = await fetch("/data");
+    const newData = await res.json();
 
-      const {latitude, longitude, altitude, sat_count, battery_voltage, battery_temperature, board_temperature, atm_pressure, atm_temperature, atm_humidity, atm_co2_eq, atm_co2_voc, atm_iaq, g_force, gyroscope, acceleration, magnetometer, orientation, force, time, real_time, reference_pressure, compass, relative_altitude, map, fall_speed, time_to_land, momentum, errors} = data
-      
-      // Compare data with previous data
-      if (JSON.stringify(data) === JSON.stringify(previousData)) {
-        // Data is the same as previous data
-        consecutiveSameDataCount++;
+    console.log(newData);
 
-        if (consecutiveSameDataCount >= 5) {
-            // Data has been the same for five consecutive times, indicate disconnection
-            console.error("Disconnected");
-            setRocketDisconected(true)
-        }
+    if (JSON.stringify(newData) === JSON.stringify(previousData)) {
+      setConsecutiveSameDataCount(count => count + 1);
+
+      //if the data is same 5 times it is disconnected
+      if (consecutiveSameDataCount >= 5) {
+        console.error("Disconnected");
+        setRocketDisconnected(true);
+      }
     } else {
-        // Data is different, reset the counter and update previousData
-        consecutiveSameDataCount = 0;
-        previousData = data;
+      setConsecutiveSameDataCount(0);
+      setPreviousData(newData);
 
-        setFlaskError(false);
-        setRocketDisconected(false)
-        setRocketError(errors.length > 0 ? true : false)
-        if (errors.length > 0) {
-          console.log("problem with rocket you dumbass... ",errors)
-        }
-        let lat = 49.2406750
-        let lon = 16.5567658
-        
-        //Math.abs(49.239890-lat) < 0.00427 ? Math.floor((49.239890-lat)/0.000048) : ( lat > 49.24416 ? -89 : 89 )
-        //Math.abs(16.554873-lon) < 0.0103 ? Math.floor((16.554873-lon)/0.000072) : ( lon > 16.565173 ? -143 : 143)
-        setLatitude( funcLatitude(latitude) ) //y
-        setLongitude( funcLongitude(longitude) ) //x
-        setAltitude(altitude)
-        setSatCount(sat_count)
-        setBatteryVoltage(battery_voltage)
-        setBatteryTemperature(battery_temperature)
-        setBoardTemperature(board_temperature)
-        setAtmPressure(atm_pressure)
-        setAtmTemperature(atm_temperature)
-        setAtmHumidity(atm_humidity)
-        setAtmCO2Eq(atm_co2_eq)
-        setAtmCO2VOC(atm_co2_voc)
-        setAtmIAQ(atm_iaq)
-        setGForce(g_force)
-        setGyroscope(gyroscope)
-        setAcceleration(acceleration)
-        setMagnetometer(magnetometer)
-        setOrientation(orientation)
-        setForce(force)
-        setTime(time)
-        setRealTime(real_time)
-        setReferencePressure(reference_pressure)
-        setCompass(-3*Math.PI/4 + compass) //-3*Math.PI/4 for arrow to point to north
-        setRelativeAltitude(relative_altitude)
-        setMap(map)
-        setFallSpeed(fall_speed)
-        setTimeToLand(time_to_land)
-        setMomentum(momentum)
-        
-        
+      setFlaskError(false);
+      setRocketDisconnected(false);
+      setRocketError(newData.errors.length > 0);
+
+      if (newData.errors.length > 0) {
+        console.log("Problem with rocket: ", newData.errors);
       }
 
-    })
-    .catch(error => setFlaskError(true))
+      const {
+        latitude, longitude, altitude, sat_count, battery_voltage,
+        battery_temperature, board_temperature, atm_pressure, atm_temperature,
+        atm_humidity, atm_co2_eq, atm_co2_voc, atm_iaq, g_force, gyroscope,
+        acceleration, magnetometer, orientation, force, time, real_time,
+        reference_pressure, compass, relative_altitude, map, fall_speed,
+        time_to_land, momentum
+      } = newData;
+
+      setLatitude(latitude);
+      setLongitude(longitude);
+      setAltitude(altitude);
+      setSatCount(sat_count);
+      setBatteryVoltage(battery_voltage);
+      setBatteryTemperature(battery_temperature);
+      setBoardTemperature(board_temperature);
+      setAtmPressure(atm_pressure);
+      setAtmTemperature(atm_temperature);
+      setAtmHumidity(atm_humidity);
+      setAtmCO2Eq(atm_co2_eq);
+      setAtmCO2VOC(atm_co2_voc);
+      setAtmIAQ(atm_iaq);
+      setGForce(g_force);
+      setGyroscope(gyroscope);
+      setAcceleration(acceleration);
+      setMagnetometer(magnetometer);
+      setOrientation(orientation);
+      setForce(force);
+      setTime(time);
+      setRealTime(real_time);
+      setReferencePressure(reference_pressure);
+      setCompass(-3 * Math.PI / 4 + compass); //to set the compass to the north -3 * Math.PI / 4 is needed
+      setRelativeAltitude(relative_altitude);
+      setMap(map);
+      setFallSpeed(fall_speed);
+      setTimeToLand(time_to_land);
+      setMomentum(momentum);
+
+      setGPSX(funcLongitude(longitude))
+      setGPSY(funcLatitude(latitude))
+
+      let progress = Math.floor(RelativeAltitude / odhad * 100)
+      if (progress > maxProgress) {
+        setMaxProgress(progress);
+      } 
+
+    }
+  } catch (error) {
+    setFlaskError(true);
   }
-  //send it within 500ms time
-  setInterval(async () => get_data(), 1000);
+}, [previousData, consecutiveSameDataCount]);
 
-  //reload page when orientation is new
-  useEffect(() => {console.log("changed orientation")}, [Orientation]);
-
+useEffect(() => {
+  const interval = setInterval(fetchData, 400);
+  return () => clearInterval(interval);
+}, [fetchData]);
   
 
-  //const rucneButton = useRef(null)
+  const rucneButton = useRef(null)
   //const senzorButton = useRef(null)
 
   //setting pressure by buttons
-  /*const handleButtonClick = async (endpoint) => {
+  const handleButtonClick = async (endpoint) => {
     try {
       const response = await fetch(endpoint);
       const state = await response.json();
       if (response.ok && !state.error) {
         rucneButton.current.style.display = "none"
-        senzorButton.current.style.display = "none"
+        //senzorButton.current.style.display = "none"
 
       } else {
         rucneButton.current.style.background = "red";
-        senzorButton.current.style.background = "red";
+        //senzorButton.current.style.background = "red";
 
       }
     } catch (error) {
       console.error("Error occurred:", error);
     }
-  };*/
+  };
 
 
   return (
     <>
-    <h5 className="momentum_title">MOMENTUM</h5>
+    <span id="navbar">
+      <h5 className="momentum_title">MOMENTUM</h5>
+      <button ref={rucneButton} onClick={() => handleButtonClick("/set_pressure")}>P</button>
+    </span>
     <hr></hr>
     <div id="data">
       <div id="admin-panel">
@@ -248,13 +217,23 @@ function App() {
           <div id="datum">datum: {day}.{month}.{year}</div>
           <div id="čas">čas: {RealTime}</div>
         </div>
-        <div className={flaskError || rocketDisconected ? "red-error connected" : "connected"} >
-          připojeno: {flaskError || rocketDisconected ? "NE" : "ANO"}
+        <div className={flaskError || rocketDisconnected ? "red-error connected" : "connected"} >
+          připojeno: {flaskError || rocketDisconnected ? "NE" : "ANO"}
         </div>
-        <div className={ flaskError || rocketError || rocketDisconected ? "red-error stav" : "stav"}>
-          stav: {flaskError ? "flask Error" : ( rocketError ? "rocket Error" : ( rocketDisconected ? "rocket disconected" : "OK"))}
+        <div className={ flaskError || rocketError || rocketDisconnected ? "red-error stav" : "stav"}>
+          stav: {flaskError ? "flask Error" : ( rocketError ? "rocket Error" : ( rocketDisconnected ? "rocket disconected" : "OK"))}
         </div>
-        <div id="gps" style={{ top: `${105 + Latitude}px`,right: `${Longitude}px`, backgroundColor: `${makeRed1 || makeRed2 ? "red" : "#d3ff00"}` }}></div>
+        <table>
+          <tr id="tb_row_down">
+            <td className="gps">zem. šířka: <div>{Longitude}</div></td>
+            <td className="gps">zem. délka: <div>{Latitude}</div></td>
+          </tr>
+          <tr>
+            <td className="gps">zem. výška: {Altitude}m</td>
+            <td className="gps">satelity: {SatCount}</td>
+          </tr>
+        </table>
+        <div id="gps" style={{ top: `${105 + GPSY}px`,right: `${GPSX}px`, backgroundColor: `${makeRed1 || makeRed2 ? "red" : "#d3ff00"}` }}></div>
         <img id="mapa" src=".\static\map_gps.png" alt="map" />
       </div>
       <div id="press-chart">
@@ -276,7 +255,7 @@ function App() {
         </div>
         <div id="main_compass">
           <img id="compass" src=".\static\compass_empty_fr.png" alt="compass"/>
-          <img id="arrow" src=".\static\střelka_good.png" style={{ transform: `rotate(${Time}rad)` }} alt="compass_arrow"/>
+          <img id="arrow" src=".\static\střelka_good.png" style={{ transform: `rotate(${Compass}rad)` }} alt="compass_arrow"/>
         </div>
       </div>
       <div id="xyz">
@@ -351,7 +330,7 @@ function App() {
               <div id="height2">výška nad zemí: </div>
               <div id="height_num">{RelativeAltitude} m</div>              
               <ProgressBar
-                  progress={progress}
+                  progress={maxProgress}
                   radius={40}
                   initialAnimation={true}
                   strokeColor="#7203FF"
@@ -361,7 +340,7 @@ function App() {
                   className="progress-bar"
                   >
                     <div className="indicator">
-                      <div>{progress}%</div>
+                      <div>{maxProgress}%</div>
                     </div>
                   </ProgressBar>
               <div id="proc-odh2">dosažení odhadu {odhad} m</div>

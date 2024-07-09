@@ -16,9 +16,13 @@ body {
   background: #252230;
 }
 
-.momentum_title {
+#navbar {
+  display: flex;
+  justify-content: space-between;
+}
+#navbar .momentum_title {
   font-size: 30px;
-  margin: 30px 0 0 20px;
+  margin: 5px 0 0 20px;
 }
 
 hr {
@@ -27,37 +31,9 @@ hr {
 
 button {
   /* Variables */
-  --button_radius: 0.75em;
-  --button_color: #7203FF;
-  --button_outline_color: #FFFFFF;
-  font-size: 11px;
-  font-weight: bold;
-  border: none;
-  border-radius: var(--button_radius);
-  background: var(--button_outline_color);
-  width: 120px;
-}
-
-.button_top {
-  display: block;
-  box-sizing: border-box;
-  border: 2px solid var(--button_outline_color);
-  border-radius: var(--button_radius);
-  padding: 0.75em 1.5em;
-  background: var(--button_color);
-  color: var(--button_outline_color);
-  transform: translateY(-0.2em);
-  transition: transform 0.1s ease;
-}
-
-button:hover .button_top {
-  /* Pull the button upwards when hovered */
-  transform: translateY(-0.33em);
-}
-
-button:active .button_top {
-  /* Push the button downwards when pressed */
-  transform: translateY(0);
+  color: #7203FF;
+  width: 20px;
+  height: 20px;
 }
 
 #data {
@@ -99,6 +75,13 @@ button:active .button_top {
   font-size: 13px;
   color: hsl(0, 0%, 70%);
 }
+#data #admin-panel #tb_row_down {
+  height: 40px;
+}
+#data #admin-panel .gps {
+  font-size: 11px;
+  padding-left: 10px;
+}
 #data #admin-panel .red-error::after, #data #admin-panel .red-error::before {
   color: red !important;
   background: red !important;
@@ -125,9 +108,6 @@ button:active .button_top {
   position: relative; /* Position the pseudo-element absolutely */
   top: 0; /* Position it at the top */
   right: 10px;
-}
-#data #admin-panel .stav {
-  padding-bottom: 50px;
 }
 #data #admin-panel .stav::after {
   content: ".";

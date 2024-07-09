@@ -23,7 +23,7 @@ REPLAY_FREQUENCY = 2
 REPLAY_START = 54_165
 REPLAY_TIME_PLUS = 0
 
-PORT: str = 'COM6'
+PORT: str = 'COM5'
 BAUD_RATE: int = 115200
 FREQUENCY: int = 2
 
@@ -112,34 +112,36 @@ def process_data(data_str: str, errors: List[str]) -> dict:
 
     try:
         b_index: int = sliced.index('b')
-        atm_pressure: str = sliced[b_index + 1]
-        atm_temperature: str = sliced[b_index + 2]
-        atm_humidity: str = sliced[b_index + 3]
-        atm_co2_eq: str = sliced[b_index + 4]
-        atm_co2_voc: str = sliced[b_index + 5]
-        atm_iaq: str = sliced[b_index + 6]
+        height_from_ground: str = sliced[b_index + 1]
+        atm_pressure: str = sliced[b_index + 2]
+        atm_temperature: str = sliced[b_index + 3]
+        atm_humidity: str = sliced[b_index + 4]
+        atm_co2_eq: str = sliced[b_index + 5]
+        atm_co2_voc: str = sliced[b_index + 6]
+        atm_iaq: str = sliced[b_index + 7]
 
-        g_force_x: str = sliced[b_index + 7]
-        g_force_y: str = sliced[b_index + 8]
-        g_force_z: str = sliced[b_index + 9]
-        gyroscope_x: str = sliced[b_index + 10]
-        gyroscope_y: str = sliced[b_index + 11]
-        gyroscope_z: str = sliced[b_index + 12]
-        acceleration_x: str = sliced[b_index + 13]
-        acceleration_y: str = sliced[b_index + 14]
-        acceleration_z: str = sliced[b_index + 15]
-        magnetometer_x: str = sliced[b_index + 16]
-        magnetometer_y: str = sliced[b_index + 17]
-        magnetometer_z: str = sliced[b_index + 18]
-        orientation_x: str = sliced[b_index + 19]
-        orientation_y: str = sliced[b_index + 20]
-        orientation_z: str = sliced[b_index + 21]
+        g_force_x: str = sliced[b_index + 8]
+        g_force_y: str = sliced[b_index + 9]
+        g_force_z: str = sliced[b_index + 10]
+        gyroscope_x: str = sliced[b_index + 11]
+        gyroscope_y: str = sliced[b_index + 12]
+        gyroscope_z: str = sliced[b_index + 13]
+        acceleration_x: str = sliced[b_index + 14]
+        acceleration_y: str = sliced[b_index + 15]
+        acceleration_z: str = sliced[b_index + 16]
+        magnetometer_x: str = sliced[b_index + 17]
+        magnetometer_y: str = sliced[b_index + 18]
+        magnetometer_z: str = sliced[b_index + 19]
+        orientation_x: str = sliced[b_index + 20]
+        orientation_y: str = sliced[b_index + 21]
+        orientation_z: str = sliced[b_index + 22]
     except (ValueError, IndexError) as err:
         archive_error(repr(err), path)
         processed['errors'].insert(0, 'Secondary Arduino not responding')
         return processed
 
     try:
+        processed['height_from_ground'] = round(float(height_from_ground), 2)
         processed['atm_pressure'] = round(float(atm_pressure), 2)
         processed['atm_temperature'] = round(float(atm_temperature), 2)
         processed['atm_humidity'] = int(atm_humidity)
@@ -220,7 +222,7 @@ def calculate_from_data(new: dict, last_data_: dict, init_time_: int,
         time = get_time()
         new['time'] = time - init_time_ + 49
         new['real_time'] = format_seconds(round(REPLAY_START + REPLAY_TIME_PLUS, 0), textify=True)[:-3]
-        REPLAY_TIME_PLUS += 0.5
+        REPLAY_TIME_PLUS += 0.4
     else:
         time = get_time()
         new['time'] = time - init_time_
@@ -437,7 +439,9 @@ def refresh():
         org = org[col_i+1:]
         print(org)
     elif TEST_MODE:
-        org = 'a;49.239185;16.554634;430;1;4.01;26.11;25.05;122;b;982.1;27.1;8;155;0.02;12;1.2;0.2;1.2;0;0.2;0.05;12;5;1;11;8;12.2;3.14;6.28;0;e'
+        #old org = 'a;49.239185;16.554634;430;1;4.01;26.11;25.05;122;b;982.1;27.1;8;155;0.02;12;1.2;0.2;1.2;0;0.2;0.05;12;5;1;11;8;12.2;3.14;6.28;0;e'
+        #org = 'a;49.239185;16.554634;430;1;4.01;26.11;25.05;b;122;982.1;27.1;8;155;0.02;12;1.2;0.2;1.2;0;0.2;0.05;12;5;1;11;8;12.2;3.14;6.28;0;e'
+        org = 'a;52.825302;52.388901;430;0;3.91;28.38;34.41;b;1.55;982.59;23.65;46;736;1.04;119;0.08;-0.04;1.00;0.00;0.01;0.00;0.03;0.01;0.03;172.00;475.00;-546.00;0.04;0.08;6.20;e'
     else:
         org = receive_data()
         org = org[2:-1]

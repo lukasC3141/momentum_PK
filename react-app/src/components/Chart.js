@@ -25,7 +25,7 @@ const LineChart = ({ time, pressure }) => {
   
   useEffect(() => {
     // Update chart data when time or pressure changes
-    if (chartData.labels.length >= 180) {
+    if (chartData.labels.length >= 120) {
       chartData.datasets.forEach(d => {
         d.data.shift();
       });
