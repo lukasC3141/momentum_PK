@@ -12,7 +12,7 @@ templates_directory = path.abspath('./react-app/build')
 static_directory = path.abspath('./react-app/build/static')
 
 # this is not used, left it here just in case
-TEST_MODE: bool = True
+TEST_MODE: bool = False
 REPLAY: bool = False
 MAP_LIMITS: bool = False
 

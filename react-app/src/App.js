@@ -16,11 +16,11 @@ let month = currentDate.getMonth() + 1; // Months are zero-indexed
 let day = currentDate.getDate();
 
 function Scene({ orientation }) {
-  const gltf = useLoader(GLTFLoader, './static/rocket.gltf')
+  const gltf = useLoader(GLTFLoader, './static/rocket6.gltf')
   return <primitive object={gltf.scene}
    scale={6}
-   rotation={[orientation[0] ? orientation[0] : 0, orientation[1]  ? orientation[1] : 0, orientation[2]  ? orientation[2] : 0]}
-   position={[0, 0, 0]}/>   
+  rotation={[orientation[2] ? orientation[2] : 0, orientation[1] ? orientation[1] : 0, orientation[0]  ? orientation[0] : 0]}
+   position={[0, 0, 0]}/>
 }
 
 
@@ -72,19 +72,24 @@ function App() {
   const [makeRed1, setMakeRed1] = useState(false)
   const [makeRed2, setMakeRed2] = useState(false)
 
+   
+    
+
   const funcLatitude = (lat) => {
-    if (Math.abs(49.239890-lat) < 0.00427) {
+    let stred_mapy = 49.239890
+    if (Math.abs(stred_mapy-lat) < 0.00427) {
       setMakeRed1(false)
-      return Math.floor((49.239890-lat)/0.000048)
+      return Math.floor((stred_mapy-lat)/0.000048)
     }else {
       setMakeRed1(true)
       return (lat > 49.24416 ? -89 : 89)
     }
   }
   const funcLongitude = (lon) => {
-    if (Math.abs(16.554873-lon) < 0.0103) {
+    let stred_mapy = 16.554873 
+    if (Math.abs(stred_mapy-lon) < 0.0103) {
       setMakeRed2(false)
-      return Math.floor((16.554873-lon)/0.000072)
+      return Math.floor((stred_mapy-lon)/0.000072)
     }else {
       setMakeRed2(true)
       return (lon > 16.565173 ? -143 : 143)
@@ -101,7 +106,7 @@ const fetchData = useCallback(async () => {
     const res = await fetch("/data");
     const newData = await res.json();
 
-    console.log(newData);
+    //console.log(newData);
 
     if (JSON.stringify(newData) === JSON.stringify(previousData)) {
       setConsecutiveSameDataCount(count => count + 1);
@@ -120,7 +125,7 @@ const fetchData = useCallback(async () => {
       setRocketError(newData.errors.length > 0);
 
       if (newData.errors.length > 0) {
-        console.log("Problem with rocket: ", newData.errors);
+        console.error("Problem with rocket: ", newData.errors);
       }
 
       const {
@@ -161,9 +166,12 @@ const fetchData = useCallback(async () => {
       setTimeToLand(time_to_land);
       setMomentum(momentum);
 
+     
+
       setGPSX(funcLongitude(longitude))
       setGPSY(funcLatitude(latitude))
 
+      //for the progress wheel for height
       let progress = Math.floor(RelativeAltitude / odhad * 100)
       if (progress > maxProgress) {
         setMaxProgress(progress);
