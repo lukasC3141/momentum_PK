@@ -6,4 +6,5 @@ student team competition in building your rocket and launching it
 - collaborated with for backend : https://github.com/Darqtaz
 
 watch demo here:
-[Watch demo](./demo.mp4)
+https://github.com/user-attachments/assets/c922c9dc-a7ae-494f-87ae-76079aea8566
+
